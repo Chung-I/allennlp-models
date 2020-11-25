@@ -17,6 +17,11 @@ class Seq2SeqPredictor(Predictor):
     def predict(self, source: str) -> JsonDict:
         return self.predict_json({"source": source})
 
+    def load_line(self, line: str) -> JsonDict:
+        return {"source": line}
+
+    def dump_line(self, outputs: JsonDict) -> str:
+        return " ".join(outputs["predicted_tokens"]) + "\n"
     @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         """

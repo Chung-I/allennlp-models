@@ -17,7 +17,7 @@ from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
 logger = logging.getLogger(__name__)
 
 
-@DatasetReader.register("seq2seq")
+@DatasetReader.register("dict_copy_seq2seq")
 class Seq2SeqDatasetReader(DatasetReader):
     """
     Read a tsv file containing paired sequences, and create a dataset suitable for a
@@ -46,19 +46,9 @@ class Seq2SeqDatasetReader(DatasetReader):
         Indexers used to define output (target side) token representations. Defaults to
         `source_token_indexers`.
     source_add_start_token : `bool`, (optional, default=`True`)
-        Whether or not to add `start_symbol` to the beginning of the source sequence.
+        Whether or not to add `START_SYMBOL` to the beginning of the source sequence.
     source_add_end_token : `bool`, (optional, default=`True`)
-        Whether or not to add `end_symbol` to the end of the source sequence.
-    target_add_start_token : `bool`, (optional, default=`True`)
-        Whether or not to add `start_symbol` to the beginning of the target sequence.
-    target_add_end_token : `bool`, (optional, default=`True`)
-        Whether or not to add `end_symbol` to the end of the target sequence.
-    start_symbol : `str`, (optional, default=`START_SYMBOL`)
-        The special token to add to the end of the source sequence or the target sequence if
-        `source_add_start_token` or `target_add_start_token` respectively.
-    end_symbol : `str`, (optional, default=`END_SYMBOL`)
-        The special token to add to the end of the source sequence or the target sequence if
-        `source_add_end_token` or `target_add_end_token` respectively.
+        Whether or not to add `END_SYMBOL` to the end of the source sequence.
     delimiter : `str`, (optional, default=`"\t"`)
         Set delimiter for tsv/csv file.
     quoting : `int`, (optional, default=`csv.QUOTE_MINIMAL`)
@@ -105,8 +95,6 @@ class Seq2SeqDatasetReader(DatasetReader):
             or target_add_start_token
             or target_add_end_token
         ):
-            # Check that the tokenizer correctly appends the start and end tokens to
-            # the sequence without splitting them.
             try:
                 self._src_start_token, self._src_end_token = self._source_tokenizer.tokenize(
                     src_start_symbol + " " + src_end_symbol
