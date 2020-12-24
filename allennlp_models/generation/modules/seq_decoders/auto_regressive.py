@@ -458,20 +458,23 @@ class AutoRegressiveSeqDecoder(SeqDecoder):
         if not isinstance(batch_indeces, numpy.ndarray):
             batch_indeces = batch_indeces.detach().cpu().numpy()
 
-        all_tokens = []
-        for indices in batch_indeces:
+        all_hypotheses = []
+        for beam_indices in batch_indeces:
             # Beam search gives us the top k results for each source sentence in the batch
             # but we just want the single best.
-            if len(indices.shape) > 1:
-                indices = indices[0]
-            indices = list(indices)
-            # Collect indices till the first end_symbol
-            if self._end_index in indices:
-                indices = indices[: indices.index(self._end_index)]
-            tokens = [
-                self._vocab.get_token_from_index(x, namespace=self._target_namespace)
-                for x in indices
-            ]
-            all_tokens.append(tokens)
+            #if len(indices.shape) > 1:
+            #    indices = indices[0]
+            hypotheses = []
+            for indices in beam_indices:
+                indices = list(indices)
+                # Collect indices till the first end_symbol
+                if self._end_index in indices:
+                    indices = indices[: indices.index(self._end_index)]
+                tokens = [
+                    self._vocab.get_token_from_index(x, namespace=self._target_namespace)
+                    for x in indices
+                ]
+                hypotheses.append(tokens)
+            all_hypotheses.append(hypotheses)
 
-        return all_tokens
+        return all_hypotheses

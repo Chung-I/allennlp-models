@@ -21,7 +21,7 @@ class Seq2SeqPredictor(Predictor):
         return {"source": line}
 
     def dump_line(self, outputs: JsonDict) -> str:
-        return " ".join(outputs["predicted_tokens"]) + "\n"
+        return " ".join(outputs["predicted_tokens"][0]) + "\n"
     @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         """
